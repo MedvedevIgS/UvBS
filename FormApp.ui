@@ -313,6 +313,22 @@
      <string notr="true">background-color: rgb(220, 220, 220);</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="LoadData">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>20</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(208, 208, 208);</string>
+    </property>
+    <property name="text">
+     <string>Загрузить</string>
+    </property>
+   </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
