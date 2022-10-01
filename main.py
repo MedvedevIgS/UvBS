@@ -6,29 +6,54 @@ import sqlite3
 import sys
 
 def minCT(row, m):
-    minel=row[0]
-    index=0
-    for i in range(m):
-        if float(row[i])<float(minel):
+    i=0
+    flag=True
+    while flag:
+        if row[i] != '#':
             minel=row[i]
-            index=i
+            index = i
+            flag=False
+        i=i+1
+    for i in range(m):
+        if row[i]!='#':
+            if float(row[i]) < float(minel):
+                minel = row[i]
+                index = i
     return index
 def CT0(MC, MT, n, m):
-    print('C')
-    for i in MC:
-        print(i)
     for i in range(n):
         indmin=minCT(MC[i], m)
         for j in range(m):
             if float(MT[i][j])>float(MT[i][indmin]):
                 MC[i][j]='#'
                 MT[i][j]='#'
-    print('C0:')
-    for i in MC:
-        print(i)
     Data=[MC,MT]
     return Data
 
+def CT1(C0, T0, n, m, Tz):
+    print('работает')
+    min_massT=[]
+    for i in range(n):
+        ind=minCT(T0[i], m)
+        min_massT.append(float(T0[i][ind]))
+    print('min_massT')
+    print(min_massT)
+    for i in range(n):
+        sum = 0
+        for j in range(i):
+            sum=sum+min_massT[j]
+        for j in range(i+1,n):
+            sum = sum + min_massT[j]
+        for j in range(m):
+            if T0[i][j]!='#':
+                if ((sum+float(T0[i][j]))>float(Tz)):
+                    T0[i][j]='#'
+                    C0[i][j]='#'
+    Data=[C0,T0]
+    return Data
+
+def Tree(С1, T1, n, m):
+    for
 
 
 
@@ -40,6 +65,9 @@ class MainWindow(QMainWindow):
     Tz=0
     matrС0=[]
     matrT0=[]
+    matrС1 = []
+    matrT1 = []
+    treeMass=[]
     def __init__(self):
         super(MainWindow, self).__init__()
         uic.loadUi("FormApp.ui", self)
@@ -170,7 +198,8 @@ class MainWindow(QMainWindow):
                 self.errorN.setVisible(False)
                 self.errorN.setText('')
     def clickRes(self):
-        if self.TzLine.text()!='':
+        if self.TzLine.text()!='' and self.nLine.text()!='' and self.mLine.text()!='':
+            self.Tz=float(self.TzLine.text())
             self.errorTz.setVisible(False)
             self.matrC = []
             self.matrT = []
@@ -190,20 +219,47 @@ class MainWindow(QMainWindow):
                         if self.matrT[i][j][b2]==',':
                             bufT = self.matrT[i][j].split(',')
                             self.matrT[i][j]=bufT[0]+'.'+bufT[1]
+            print('C:')
             for i in self.matrC:
                 print(i)
-            Data = CT0(self.matrC, self.matrT, self.n, self.m)
-            self.matrС0 = Data[0]
-            self.matrT0 = Data[1]
+            print('T:')
+            for i in self.matrT:
+                print(i)
+
+
+            Data0 = CT0(self.matrC, self.matrT, self.n, self.m)
+            self.matrС0 = Data0[0]
+            self.matrT0 = Data0[1]
+
+
             print('C0:')
             for i in range(self.n):
                 print(self.matrС0[i])
             print('T0:')
             for i in range(self.n):
                 print(self.matrT0[i])
+
+
+            Data1 = CT1(self.matrС0, self.matrT0, self.n, self.m, self.Tz)
+            self.matrС1=Data1[0]
+            self.matrT1 = Data1[1]
+
+
+            print('C1:')
+            for i in range(self.n):
+                print(self.matrС1[i])
+            print('T1:')
+            for i in range(self.n):
+                print(self.matrT1[i])
+
+
+
+
+
+
         else:
             self.errorTz.setVisible(True)
-            self.errorTz.setText('Введите Tz')
+            self.errorTz.setText('Заполните данные')
 
 
 
