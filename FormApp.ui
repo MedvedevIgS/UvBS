@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>774</width>
-    <height>420</height>
+    <width>981</width>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,14 +40,55 @@
       <number>5</number>
      </property>
      <item>
-      <widget class="QLabel" name="label_5">
-       <property name="styleSheet">
-        <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="leftMargin">
+        <number>1</number>
        </property>
-       <property name="text">
-        <string>T=</string>
+       <property name="topMargin">
+        <number>1</number>
        </property>
-      </widget>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
+         <property name="text">
+          <string>T=</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QTableWidget" name="TMatr"/>
@@ -77,14 +118,55 @@
       <number>5</number>
      </property>
      <item>
-      <widget class="QLabel" name="label_6">
-       <property name="styleSheet">
-        <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="leftMargin">
+        <number>1</number>
        </property>
-       <property name="text">
-        <string>C=</string>
+       <property name="topMargin">
+        <number>1</number>
        </property>
-      </widget>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
+         <property name="text">
+          <string>C=</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QTableWidget" name="CMatr">
@@ -104,7 +186,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -214,7 +296,7 @@
         <string notr="true">background-color: rgb(208, 208, 208);</string>
        </property>
        <property name="text">
-        <string>Посчитать</string>
+        <string>Расчитать</string>
        </property>
       </widget>
      </item>
@@ -318,18 +400,18 @@
      <rect>
       <x>570</x>
       <y>20</y>
-      <width>91</width>
-      <height>31</height>
+      <width>111</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(208, 208, 208);</string>
     </property>
     <property name="text">
-     <string>Загрузить</string>
+     <string>Загрузить данные</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
