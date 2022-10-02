@@ -18,6 +18,94 @@ def minCT(row, m):
                 minel = row[i]
                 index = i
     return index
+
+
+
+
+
+def Tree(C1, T1, n, m, Tz):
+    TreeMass = []
+    okT = []
+    okC = []
+    min_massT = []
+    for i in range(n):
+        ind = minCT(T1[i], m)
+        min_massT.append(float(T1[i][ind]))
+    min_massC = []
+    for i in range(n):
+        ind = minCT(C1[i], m)
+        min_massC.append(float(C1[i][ind]))
+    inexmass = []
+    for i in range(n):
+        print('++++++++++++++++++++++++++++++++++++++++++')
+        print('inexmass')
+        print(inexmass)
+        TreeMass.append([])
+        ROWIND=-1
+        for j in range(m):
+            print(C1[i][j])
+            if C1[i][j] != '#':
+                ROWIND = ROWIND+1
+                TreeMass[i].append([])
+                sumT = 0
+                sumC = 0
+                print('ДО')
+                print('sumT='+str(sumT)+' sumC='+str(sumC))
+                for w in range(i+1, n):
+                    sumT = sumT + min_massT[w]
+                    sumC = sumC + min_massC[w]
+                print('sumT=' + str(sumT) + ' sumC=' + str(sumC))
+                for w in range(i):
+                    sumT = sumT + okT[w]
+                    sumC = sumC + okC[w]
+                print('sumT=' + str(sumT) + ' sumC=' + str(sumC))
+
+                sumT = sumT + float(T1[i][j])
+                sumC = sumC + float(C1[i][j])
+                print('После')
+                print('sumT='+str(sumT) + ' sumC='+str(sumC))
+                TreeMass[i][ROWIND].append(sumC)
+                TreeMass[i][ROWIND].append(sumT)
+                print("TreeMass[i]")
+                print(TreeMass[i])
+                bufindex = inexmass.copy()
+                print('bufindex')
+                print(bufindex)
+                bufindex.append(j)
+                print(bufindex)
+                TreeMass[i][ROWIND].append(bufindex)
+                print("TreeMass[i]")
+                print(TreeMass[i])
+        print('--------------------------------')
+        print('inexmass')
+        print(inexmass)
+        ind_min = 0
+        for j in range(len(TreeMass[i])):
+            min_C_row = TreeMass[i][0][0]
+            print('min_C_row')
+            print(min_C_row)
+            print(str(TreeMass[i][j][1])+'<='+str(Tz))
+            print(str(min_C_row) + '<=' + str(TreeMass[i][j][0]))
+            print(TreeMass[i][j][1] <= Tz and min_C_row >= TreeMass[i][j][0])
+            if  TreeMass[i][j][1] <= Tz and min_C_row >= TreeMass[i][j][0]:
+                inexmass = TreeMass[i][j][2]
+                ind_min = TreeMass[i][j][2][-1]
+        print('inexmass')
+        print(inexmass)
+        print('ind_min')
+        print(ind_min)
+        okT.append(float(T1[i][ind_min]))
+        print('okT')
+        print(okT)
+        okC.append(float(C1[i][ind_min]))
+        print('okC')
+        print(okC)
+        print('прошли строку')
+    for i in TreeMass:
+        print(i)
+    return TreeMass
+
+
 def CT0(MC, MT, n, m):
     for i in range(n):
         indmin=minCT(MC[i], m)
@@ -29,7 +117,6 @@ def CT0(MC, MT, n, m):
     return Data
 
 def CT1(C0, T0, n, m, Tz):
-    print('работает')
     min_massT=[]
     for i in range(n):
         ind=minCT(T0[i], m)
@@ -47,8 +134,6 @@ def CT1(C0, T0, n, m, Tz):
                     C0[i][j]='#'
     Data=[C0,T0]
     return Data
-
-#def Tree(С1, T1, n, m):
 
 class ResWindow(QMainWindow):
     n=0
@@ -71,9 +156,7 @@ class ResWindow(QMainWindow):
             self.C0[i]=self.C0[i].split(' ')
 
         self.n=len(self.C0)
-        print('n '+str(self.n))
         self.m = len(self.C0[0])
-        print('m ' + str(self.m))
         self.T0 = Data[1]
         self.T0 = self.T0.split('\n')
         for i in range(len(self.T0)):
@@ -88,7 +171,6 @@ class ResWindow(QMainWindow):
         self.T1 = self.T1.split('\n')
         for i in range(len(self.T1)):
             self.T1[i] = self.T1[i].split(' ')
-        print('1')
 
         self.T0Matr.setRowCount(self.n)
         self.T0Matr.setColumnCount(self.m)
@@ -102,18 +184,15 @@ class ResWindow(QMainWindow):
         w = 15 + 39 * self.m
         print(h)
         print(w)
-        print('2')
         self.C0Matr.resize(QtCore.QSize(w, h))
         self.T0Matr.resize(QtCore.QSize(w, h))
         self.C1Matr.resize(QtCore.QSize(w, h))
         self.T1Matr.resize(QtCore.QSize(w, h))
-        print('3')
         for i in range(self.m):
             self.T1Matr.setColumnWidth(i, 1)
             self.C1Matr.setColumnWidth(i, 1)
             self.T0Matr.setColumnWidth(i, 1)
             self.C0Matr.setColumnWidth(i, 1)
-        print('4')
         for i in range(self.n):
             for j in range(self.m):
                 Line0C0 = QtWidgets.QLineEdit()
@@ -128,7 +207,6 @@ class ResWindow(QMainWindow):
                 self.T0Matr.setCellWidget(i, j, Line0T0)
                 self.C1Matr.setCellWidget(i, j, Line0C1)
                 self.T1Matr.setCellWidget(i, j, Line0T1)
-        print('5')
         for i in range(self.n):
             for j in range(self.m):
                 self.C0Matr.cellWidget(i, j).setText(self.C0[i][j])
@@ -367,9 +445,10 @@ class MainWindow(QMainWindow):
                 else:
                     stroka = stroka[:-1] + '\n'
                 fw.write(stroka)
-
             fw.close()
-
+            print('аботает1')
+            self.treeMass=Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
+            print('аботает2')
             global widget2
             Res=ResWindow()
             widget2 = QtWidgets.QStackedWidget()
