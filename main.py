@@ -1,8 +1,6 @@
 from PyQt6 import uic, QtCore, QtWidgets, QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt6.QtGui import QIntValidator, QDoubleValidator
-from PyQt6.QtSql import  *
-import sqlite3
 import sys
 
 def minCT(row, m):
@@ -36,8 +34,6 @@ def CT1(C0, T0, n, m, Tz):
     for i in range(n):
         ind=minCT(T0[i], m)
         min_massT.append(float(T0[i][ind]))
-    print('min_massT')
-    print(min_massT)
     for i in range(n):
         sum = 0
         for j in range(i):
@@ -52,8 +48,94 @@ def CT1(C0, T0, n, m, Tz):
     Data=[C0,T0]
     return Data
 
-def Tree(С1, T1, n, m):
-    for
+#def Tree(С1, T1, n, m):
+
+class ResWindow(QMainWindow):
+    n=0
+    m=0
+    T0=[]
+    C0=[]
+    C1=[]
+    T1=[]
+    def __init__(self):
+        super(ResWindow, self).__init__()
+        uic.loadUi("FormRes.ui", self)
+        self.setWindowTitle("Результат")
+        f = open("Res\\res.txt", 'r')
+        Data=f.read()
+        f.close()
+        Data=Data.split('\n\n')
+        self.C0=Data[0]
+        self.C0=self.C0.split('\n')
+        for i in range(len(self.C0)):
+            self.C0[i]=self.C0[i].split(' ')
+
+        self.n=len(self.C0)
+        print('n '+str(self.n))
+        self.m = len(self.C0[0])
+        print('m ' + str(self.m))
+        self.T0 = Data[1]
+        self.T0 = self.T0.split('\n')
+        for i in range(len(self.T0)):
+            self.T0[i] = self.T0[i].split(' ')
+
+        self.C1 = Data[2]
+        self.C1 = self.C1.split('\n')
+        for i in range(len(self.C1)):
+            self.C1[i] = self.C1[i].split(' ')
+
+        self.T1= Data[3]
+        self.T1 = self.T1.split('\n')
+        for i in range(len(self.T1)):
+            self.T1[i] = self.T1[i].split(' ')
+        print('1')
+
+        self.T0Matr.setRowCount(self.n)
+        self.T0Matr.setColumnCount(self.m)
+        self.C0Matr.setRowCount(self.n)
+        self.C0Matr.setColumnCount(self.m)
+        self.T1Matr.setRowCount(self.n)
+        self.T1Matr.setColumnCount(self.m)
+        self.C1Matr.setRowCount(self.n)
+        self.C1Matr.setColumnCount(self.m)
+        h = 25 + 30 * self.n
+        w = 15 + 39 * self.m
+        print(h)
+        print(w)
+        print('2')
+        self.C0Matr.resize(QtCore.QSize(w, h))
+        self.T0Matr.resize(QtCore.QSize(w, h))
+        self.C1Matr.resize(QtCore.QSize(w, h))
+        self.T1Matr.resize(QtCore.QSize(w, h))
+        print('3')
+        for i in range(self.m):
+            self.T1Matr.setColumnWidth(i, 1)
+            self.C1Matr.setColumnWidth(i, 1)
+            self.T0Matr.setColumnWidth(i, 1)
+            self.C0Matr.setColumnWidth(i, 1)
+        print('4')
+        for i in range(self.n):
+            for j in range(self.m):
+                Line0C0 = QtWidgets.QLineEdit()
+                Line0T0 = QtWidgets.QLineEdit()
+                Line0C1 = QtWidgets.QLineEdit()
+                Line0T1 = QtWidgets.QLineEdit()
+                Line0T0.setValidator(QDoubleValidator())
+                Line0C0.setValidator(QDoubleValidator())
+                Line0T1.setValidator(QDoubleValidator())
+                Line0C1.setValidator(QDoubleValidator())
+                self.C0Matr.setCellWidget(i, j, Line0C0)
+                self.T0Matr.setCellWidget(i, j, Line0T0)
+                self.C1Matr.setCellWidget(i, j, Line0C1)
+                self.T1Matr.setCellWidget(i, j, Line0T1)
+        print('5')
+        for i in range(self.n):
+            for j in range(self.m):
+                self.C0Matr.cellWidget(i, j).setText(self.C0[i][j])
+                self.T0Matr.cellWidget(i, j).setText(self.T0[i][j])
+                self.C1Matr.cellWidget(i, j).setText(self.C1[i][j])
+                self.T1Matr.cellWidget(i, j).setText(self.T1[i][j])
+
 
 
 
@@ -225,37 +307,76 @@ class MainWindow(QMainWindow):
             print('T:')
             for i in self.matrT:
                 print(i)
-
-
             Data0 = CT0(self.matrC, self.matrT, self.n, self.m)
-            self.matrС0 = Data0[0]
+            self.matrC0 = Data0[0]
             self.matrT0 = Data0[1]
-
-
+            fw = open("Res\\res.txt", 'w')
             print('C0:')
+            for i in self.matrC0:
+                print(i)
+
             for i in range(self.n):
-                print(self.matrС0[i])
+                stroka=''
+                for j in range(self.m):
+                    stroka=stroka+self.matrC0[i][j]+' '
+                stroka=stroka[:-1]+'\n'
+                fw.write(stroka)
+            fw.write('\n')
+
+
             print('T0:')
+            for i in self.matrT0:
+                print(i)
+
             for i in range(self.n):
-                print(self.matrT0[i])
+                stroka=''
+                for j in range(self.m):
+                    stroka=stroka+self.matrT0[i][j]+' '
+                stroka=stroka[:-1]+'\n'
+                fw.write(stroka)
+            fw.write('\n')
 
 
-            Data1 = CT1(self.matrС0, self.matrT0, self.n, self.m, self.Tz)
-            self.matrС1=Data1[0]
+            Data1 = CT1(self.matrC0, self.matrT0, self.n, self.m, self.Tz)
+            self.matrC1=Data1[0]
             self.matrT1 = Data1[1]
 
 
             print('C1:')
+            for i in self.matrC1:
+                print(i)
+
             for i in range(self.n):
-                print(self.matrС1[i])
+                stroka=''
+                for j in range(self.m):
+                    stroka=stroka+self.matrC1[i][j]+' '
+                stroka=stroka[:-1]+'\n'
+                fw.write(stroka)
+            fw.write('\n')
+
             print('T1:')
+            for i in self.matrT1:
+                print(i)
+
             for i in range(self.n):
-                print(self.matrT1[i])
+                stroka=''
+                for j in range(self.m):
+                    stroka=stroka+self.matrT1[i][j]+' '
+                if i==self.n-1 and j==self.m-1:
+                    stroka = stroka[:-1]
+                else:
+                    stroka = stroka[:-1] + '\n'
+                fw.write(stroka)
 
+            fw.close()
 
-
-
-
+            global widget2
+            Res=ResWindow()
+            widget2 = QtWidgets.QStackedWidget()
+            widget2.addWidget(Res)
+            widget2.setMinimumWidth(795)
+            widget2.setMinimumHeight(595)
+            widget2.show()
 
         else:
             self.errorTz.setVisible(True)
