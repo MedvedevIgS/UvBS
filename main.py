@@ -2,7 +2,40 @@ from PyQt6 import uic, QtCore, QtWidgets, QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt6.QtGui import QIntValidator, QDoubleValidator
 import sys
-import graphviz
+import networkx as nx
+import matplotlib.pyplot as plt
+
+
+def hierarchy_pos(G, root, width=1., vert_gap = 0.2, vert_loc = 0, xcenter = 0.5,
+                  pos = None, parent = None):
+    '''If there is a cycle that is reachable from root, then this will see infinite recursion.
+       G: the graph
+       root: the root node of current branch
+       width: horizontal space allocated for this branch - avoids overlap with other branches
+       vert_gap: gap between levels of hierarchy
+       vert_loc: vertical location of root
+       xcenter: horizontal location of root
+       pos: a dict saying where all nodes go if they have been assigned
+       parent: parent of this branch.'''
+    if pos == None:
+        pos = {root:(xcenter,vert_loc)}
+    else:
+        pos[root] = (xcenter, vert_loc)
+    neighbors = list(G.neighbors(root))
+    if parent != None:   #this should be removed for directed graphs.
+        neighbors.remove(parent)  #if directed, then parent not in neighbors.
+    if len(neighbors)!=0:
+        dx = width/len(neighbors)
+        nextx = xcenter - width/2 - dx/2
+        for neighbor in neighbors:
+            nextx += dx
+            pos = hierarchy_pos(G,neighbor, width = dx, vert_gap = vert_gap,
+                                vert_loc = vert_loc-vert_gap, xcenter=nextx, pos=pos,
+                                parent = root)
+    return pos
+
+
+
 def minCT(row, m):
     i=0
     flag=True
@@ -25,6 +58,8 @@ def minCT(row, m):
 
 def Tree(C1, T1, n, m, Tz):
     TreeMass = []
+    sumC0=0
+    sumT0 = 0
     okT = []
     okC = []
     min_massT = []
@@ -35,6 +70,13 @@ def Tree(C1, T1, n, m, Tz):
     for i in range(n):
         ind = minCT(C1[i], m)
         min_massC.append(float(C1[i][ind]))
+    for i in range(n):
+        sumC0=sumC0+min_massC[i]
+        sumT0 = sumT0 + min_massT[i]
+    TreeMass.append([[]])
+    TreeMass[0][0].append(sumC0)
+    TreeMass[0][0].append(sumT0)
+    TreeMass[0][0].append([])
     inexmass = []
     for i in range(n):
         print('++++++++++++++++++++++++++++++++++++++++++')
@@ -46,7 +88,7 @@ def Tree(C1, T1, n, m, Tz):
             print(C1[i][j])
             if C1[i][j] != '#':
                 ROWIND = ROWIND+1
-                TreeMass[i].append([])
+                TreeMass[i+1].append([])
                 sumT = 0
                 sumC = 0
                 print('ДО')
@@ -64,32 +106,32 @@ def Tree(C1, T1, n, m, Tz):
                 sumC = sumC + float(C1[i][j])
                 print('После')
                 print('sumT='+str(sumT) + ' sumC='+str(sumC))
-                TreeMass[i][ROWIND].append(sumC)
-                TreeMass[i][ROWIND].append(sumT)
+                TreeMass[i+1][ROWIND].append(sumC)
+                TreeMass[i+1][ROWIND].append(sumT)
                 print("TreeMass[i]")
-                print(TreeMass[i])
+                print(TreeMass[i+1])
                 bufindex = inexmass.copy()
                 print('bufindex')
                 print(bufindex)
                 bufindex.append(j)
                 print(bufindex)
-                TreeMass[i][ROWIND].append(bufindex)
+                TreeMass[i+1][ROWIND].append(bufindex)
                 print("TreeMass[i]")
-                print(TreeMass[i])
+                print(TreeMass[i+1])
         print('--------------------------------')
         print('inexmass')
         print(inexmass)
         ind_min = 0
-        for j in range(len(TreeMass[i])):
-            min_C_row = TreeMass[i][0][0]
+        for j in range(len(TreeMass[i+1])):
+            min_C_row = TreeMass[i+1][0][0]
             print('min_C_row')
             print(min_C_row)
-            print(str(TreeMass[i][j][1])+'<='+str(Tz))
-            print(str(min_C_row) + '<=' + str(TreeMass[i][j][0]))
-            print(TreeMass[i][j][1] <= Tz and min_C_row >= TreeMass[i][j][0])
-            if  TreeMass[i][j][1] <= Tz and min_C_row >= TreeMass[i][j][0]:
-                inexmass = TreeMass[i][j][2]
-                ind_min = TreeMass[i][j][2][-1]
+            print(str(TreeMass[i+1][j][1])+'<='+str(Tz))
+            print(str(min_C_row) + '<=' + str(TreeMass[i+1][j][0]))
+            print(TreeMass[i+1][j][1] <= Tz and min_C_row >= TreeMass[i+1][j][0])
+            if  TreeMass[i+1][j][1] <= Tz and min_C_row >= TreeMass[i+1][j][0]:
+                inexmass = TreeMass[i+1][j][2]
+                ind_min = TreeMass[i+1][j][2][-1]
         print('inexmass')
         print(inexmass)
         print('ind_min')
@@ -103,7 +145,9 @@ def Tree(C1, T1, n, m, Tz):
         print('прошли строку')
     for i in TreeMass:
         print(i)
-    return TreeMass
+    print(inexmass)
+    DataOUT=[TreeMass, inexmass]
+    return DataOUT
 
 
 def CT0(MC, MT, n, m):
@@ -172,6 +216,19 @@ class ResWindow(QMainWindow):
         self.T1 = self.T1.split('\n')
         for i in range(len(self.T1)):
             self.T1[i] = self.T1[i].split(' ')
+
+        indexmassTree=Data[4]
+        indexmassTree=indexmassTree.split(' ')
+        zadstrok = ''
+        yzelstrok = ''
+        for i in range(len(indexmassTree)):
+            zadstrok = zadstrok + str(i + 1) + '  '
+            yzelstrok = yzelstrok + str(int(indexmassTree[i]) + 1) + '  '
+        print(zadstrok)
+        print(yzelstrok)
+
+        self.ZadachaLine.setText(zadstrok)
+        self.YzelLine.setText(yzelstrok)
 
         self.T0Matr.setRowCount(self.n)
         self.T0Matr.setColumnCount(self.m)
@@ -458,19 +515,57 @@ class MainWindow(QMainWindow):
                 stroka = ''
                 for j in range(self.m):
                     stroka = stroka + self.matrT1[i][j] + ' '
-                if i == self.n - 1 and j == self.m - 1:
-                    stroka = stroka[:-1]
-                else:
-                    stroka = stroka[:-1] + '\n'
+                stroka = stroka[:-1] + '\n'
                 fw.write(stroka)
+            fw.write('\n')
+            DataTree=Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
+            self.treeMass = DataTree[0]
+            stroka=''
+            for i in range(len(DataTree[1])):
+                stroka=stroka+str(DataTree[1][i])+' '
+            fw.write(stroka[:-1])
             fw.close()
-            self.treeMass = Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
+
+            G = nx.Graph()
+            edgesG=[]
+            print(edgesG)
+            print(self.treeMass[0][0][2])
+            for i in range(len(self.treeMass)):
+                for j in range(len(self.treeMass[i])):
+                    print(self.treeMass[i][j][0])
+                    print(self.treeMass[i][j][1])
+                    node = str(self.treeMass[i][j][0]) + ', ' + str(self.treeMass[i][j][1]) + ' |' + str(i)+', '+str(j)
+                    print(node)
+                    G.add_node(node)
+            print('ok')
+            for i in range(1,len(self.treeMass)):
+                for j in range(len(self.treeMass[i-1])):
+                    if self.treeMass[i-1][j][2]==self.treeMass[i][0][2][:-1]:
+                        node1=str(self.treeMass[i-1][j][0])+', '+str(self.treeMass[i-1][j][1])+' |'+str(i-1)+', '+str(j)
+                print('ok1')
+                for j in range(len(self.treeMass[i])):
+                    node2=str(self.treeMass[i][j][0])+', '+str(self.treeMass[i][j][1])+' |'+str(i)+', '+str(j)
+                    rebro = (node1, node2)
+                    edgesG.append(rebro)
+            print(edgesG)
+            G.add_edges_from(edgesG)
+            pos1 = hierarchy_pos(G, edgesG[0][0])
+            print('pos1')
+            nx.draw(G, pos=pos1, with_labels=True)
+            plt.show()
+
+
+
+
+
+
+
             global widget2
             Res = ResWindow()
             widget2 = QtWidgets.QStackedWidget()
             widget2.addWidget(Res)
-            widget2.setMinimumWidth(795)
-            widget2.setMinimumHeight(595)
+            widget2.setMinimumWidth(810)
+            widget2.setMinimumHeight(683)
             widget2.show()
 
         else:
