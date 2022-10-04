@@ -142,17 +142,22 @@ def Tree(C1, T1, n, m, Tz):
         print('--------------------------------')
         print('inexmass')
         print(inexmass)
-        ind_min = 0
+        min_C_row = TreeMass[i + 1][0][0]
+        ind_min = TreeMass[i + 1][0][2][-1]
+        inexmass = TreeMass[i + 1][0][2]
         for j in range(len(TreeMass[i+1])):
-            min_C_row = TreeMass[i+1][0][0]
             print('min_C_row')
             print(min_C_row)
             print(str(TreeMass[i+1][j][1])+'<='+str(Tz))
-            print(str(min_C_row) + '<=' + str(TreeMass[i+1][j][0]))
+            print(str(min_C_row) + '>' + str(TreeMass[i+1][j][0]))
             print(TreeMass[i+1][j][1] <= Tz and min_C_row >= TreeMass[i+1][j][0])
             if  TreeMass[i+1][j][1] <= Tz and min_C_row >= TreeMass[i+1][j][0]:
-                inexmass = TreeMass[i+1][j][2]
-                ind_min = TreeMass[i+1][j][2][-1]
+                if min_C_row == TreeMass[i+1][j][0] and TreeMass[i+1][j][1] < Tz:
+                    inexmass = TreeMass[i + 1][j][2]
+                    ind_min = TreeMass[i + 1][j][2][-1]
+                elif min_C_row > TreeMass[i+1][j][0]:
+                    inexmass = TreeMass[i + 1][j][2]
+                    ind_min = TreeMass[i + 1][j][2][-1]
         print('inexmass')
         print(inexmass)
         print('ind_min')
