@@ -2,7 +2,7 @@ from PyQt6 import uic, QtCore, QtWidgets, QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt6.QtGui import QIntValidator, QDoubleValidator
 import sys
-
+import graphviz
 def minCT(row, m):
     i=0
     flag=True
@@ -118,6 +118,7 @@ def CT0(MC, MT, n, m):
 
 def CT1(C0, T0, n, m, Tz):
     min_massT=[]
+    print(T0)
     for i in range(n):
         ind=minCT(T0[i], m)
         min_massT.append(float(T0[i][ind]))
@@ -361,74 +362,91 @@ class MainWindow(QMainWindow):
         if self.TzLine.text()!='' and self.nLine.text()!='' and self.mLine.text()!='':
             self.Tz=float(self.TzLine.text())
             self.errorTz.setVisible(False)
-            self.matrC = []
-            self.matrT = []
-            for i in range(self.n):
-                self.matrC.append([])
-                self.matrT.append([])
-                for j in range(self.m):
-                    self.matrC[i].append(self.CMatr.cellWidget(i, j).text())
-                    self.matrT[i].append(self.TMatr.cellWidget(i, j).text())
-            for i in range(self.n):
-                for j in range(self.m):
-                    for b1 in range(len(self.matrC[i][j])):
-                        if self.matrC[i][j][b1]==',':
-                            bufC =self.matrC[i][j].split(',')
-                            self.matrC[i][j]=bufC[0]+'.'+bufC[1]
-                    for b2 in range(len(self.matrT[i][j])):
-                        if self.matrT[i][j][b2]==',':
-                            bufT = self.matrT[i][j].split(',')
-                            self.matrT[i][j]=bufT[0]+'.'+bufT[1]
-            print('C:')
-            for i in self.matrC:
-                print(i)
-            print('T:')
-            for i in self.matrT:
-                print(i)
-            Data0 = CT0(self.matrC, self.matrT, self.n, self.m)
-            self.matrC0 = Data0[0]
-            self.matrT0 = Data0[1]
-            fw = open("Res\\res.txt", 'w')
-            print('C0:')
-            for i in self.matrC0:
-                print(i)
+            flagTz=True
+            while flagTz:
+                self.matrC = []
+                self.matrT = []
+                for i in range(self.n):
+                    self.matrC.append([])
+                    self.matrT.append([])
+                    for j in range(self.m):
+                        self.matrC[i].append(self.CMatr.cellWidget(i, j).text())
+                        self.matrT[i].append(self.TMatr.cellWidget(i, j).text())
+                for i in range(self.n):
+                    for j in range(self.m):
+                        for b1 in range(len(self.matrC[i][j])):
+                            if self.matrC[i][j][b1] == ',':
+                                bufC = self.matrC[i][j].split(',')
+                                self.matrC[i][j] = bufC[0] + '.' + bufC[1]
+                        for b2 in range(len(self.matrT[i][j])):
+                            if self.matrT[i][j][b2] == ',':
+                                bufT = self.matrT[i][j].split(',')
+                                self.matrT[i][j] = bufT[0] + '.' + bufT[1]
+                print('C:')
+                for i in self.matrC:
+                    print(i)
+                print('T:')
+                for i in self.matrT:
+                    print(i)
+                Data0 = CT0(self.matrC, self.matrT, self.n, self.m)
+                self.matrC0 = Data0[0]
+                self.matrT0 = Data0[1]
+                fw = open("Res\\res.txt", 'w')
+                print('C0:')
+                for i in self.matrC0:
+                    print(i)
 
-            for i in range(self.n):
-                stroka=''
-                for j in range(self.m):
-                    stroka=stroka+self.matrC0[i][j]+' '
-                stroka=stroka[:-1]+'\n'
-                fw.write(stroka)
-            fw.write('\n')
+                for i in range(self.n):
+                    stroka = ''
+                    for j in range(self.m):
+                        stroka = stroka + self.matrC0[i][j] + ' '
+                    stroka = stroka[:-1] + '\n'
+                    fw.write(stroka)
+                fw.write('\n')
+                print('T0:')
+                for i in self.matrT0:
+                    print(i)
 
+                for i in range(self.n):
+                    stroka = ''
+                    for j in range(self.m):
+                        stroka = stroka + self.matrT0[i][j] + ' '
+                    stroka = stroka[:-1] + '\n'
+                    fw.write(stroka)
+                fw.write('\n')
 
-            print('T0:')
-            for i in self.matrT0:
-                print(i)
+                Data1 = CT1(self.matrC0, self.matrT0, self.n, self.m, self.Tz)
+                self.matrC1 = Data1[0]
+                self.matrT1 = Data1[1]
+                flagempty_row = True
+                i=0
+                while flagempty_row and i < self.n:
+                    flagempty_row = False
+                    for j in range(self.m):
+                        if self.matrC1[i][j] != '#':
+                            flagempty_row = True
+                    i = i + 1
+                if flagempty_row:
+                    flagTz=False
+                else:
+                    print('Подбор')
+                    self.errorTz.setVisible(True)
+                    self.errorTz.setText('Подбор минимальной Tз')
+                    print('Подбор')
+                    self.Tz=self.Tz+0.5
+                    print('Подбор')
+                    print(flagTz)
 
-            for i in range(self.n):
-                stroka=''
-                for j in range(self.m):
-                    stroka=stroka+self.matrT0[i][j]+' '
-                stroka=stroka[:-1]+'\n'
-                fw.write(stroka)
-            fw.write('\n')
-
-
-            Data1 = CT1(self.matrC0, self.matrT0, self.n, self.m, self.Tz)
-            self.matrC1=Data1[0]
-            self.matrT1 = Data1[1]
-
-
+            self.TzLine.setText(str(self.Tz))
             print('C1:')
             for i in self.matrC1:
                 print(i)
 
             for i in range(self.n):
-                stroka=''
+                stroka = ''
                 for j in range(self.m):
-                    stroka=stroka+self.matrC1[i][j]+' '
-                stroka=stroka[:-1]+'\n'
+                    stroka = stroka + self.matrC1[i][j] + ' '
+                stroka = stroka[:-1] + '\n'
                 fw.write(stroka)
             fw.write('\n')
 
@@ -437,20 +455,18 @@ class MainWindow(QMainWindow):
                 print(i)
 
             for i in range(self.n):
-                stroka=''
+                stroka = ''
                 for j in range(self.m):
-                    stroka=stroka+self.matrT1[i][j]+' '
-                if i==self.n-1 and j==self.m-1:
+                    stroka = stroka + self.matrT1[i][j] + ' '
+                if i == self.n - 1 and j == self.m - 1:
                     stroka = stroka[:-1]
                 else:
                     stroka = stroka[:-1] + '\n'
                 fw.write(stroka)
             fw.close()
-            print('аботает1')
-            self.treeMass=Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
-            print('аботает2')
+            self.treeMass = Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
             global widget2
-            Res=ResWindow()
+            Res = ResWindow()
             widget2 = QtWidgets.QStackedWidget()
             widget2.addWidget(Res)
             widget2.setMinimumWidth(795)
