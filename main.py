@@ -35,7 +35,28 @@ def hierarchy_pos(G, root, width=1., vert_gap = 0.2, vert_loc = 0, xcenter = 0.5
     return pos
 
 
-
+def minCT0(row, m, T, ii):
+    i=0
+    flag=True
+    while flag:
+        if row[i] != '#':
+            minel=row[i]
+            index = i
+            minT=T[ii][i]
+            flag=False
+        i=i+1
+    for i in range(m):
+        if row[i]!='#':
+            if float(row[i]) <= float(minel):
+                if float(row[i]) == float(minel):
+                    if T[ii][i]<minT:
+                        minT=T[ii][i]
+                        minel = row[i]
+                        index = i
+                else:
+                    minel = row[i]
+                    index = i
+    return index
 def minCT(row, m):
     i=0
     flag=True
@@ -152,7 +173,7 @@ def Tree(C1, T1, n, m, Tz):
 
 def CT0(MC, MT, n, m):
     for i in range(n):
-        indmin=minCT(MC[i], m)
+        indmin=minCT0(MC[i], m, MT, i)
         for j in range(m):
             if float(MT[i][j])>float(MT[i][indmin]):
                 MC[i][j]='#'
