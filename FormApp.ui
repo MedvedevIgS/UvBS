@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>981</width>
-    <height>610</height>
+    <width>947</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,7 +91,20 @@
       </layout>
      </item>
      <item>
-      <widget class="QTableWidget" name="TMatr"/>
+      <widget class="QTableWidget" name="TMatr">
+       <property name="minimumSize">
+        <size>
+         <width>47</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>327</width>
+         <height>261</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -189,7 +202,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>620</x>
       <y>10</y>
       <width>181</width>
       <height>115</height>
@@ -305,8 +318,8 @@
    <widget class="QLineEdit" name="errorN">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>20</y>
+      <x>380</x>
+      <y>30</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -336,8 +349,8 @@
    <widget class="QLineEdit" name="errorM">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>50</y>
+      <x>380</x>
+      <y>60</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -367,8 +380,8 @@
    <widget class="QLineEdit" name="errorTz">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>80</y>
+      <x>380</x>
+      <y>90</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -398,7 +411,7 @@
    <widget class="QPushButton" name="LoadData">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>810</x>
       <y>20</y>
       <width>111</width>
       <height>51</height>
@@ -414,10 +427,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>105</width>
-      <height>103</height>
+      <width>271</width>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -441,7 +454,7 @@
           <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
          </property>
          <property name="text">
-          <string>n=</string>
+          <string>Колличество задач=</string>
          </property>
         </widget>
        </item>
@@ -477,7 +490,7 @@
           <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
          </property>
          <property name="text">
-          <string>m=</string>
+          <string>Колличество узлов=</string>
          </property>
         </widget>
        </item>
@@ -505,43 +518,82 @@
        </item>
       </layout>
      </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>343</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="styleSheet">
-          <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
-         </property>
-         <property name="text">
-          <string>Tz=</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="TzLine">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>51</width>
-           <height>21</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>51</width>
-           <height>21</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_3">
+       <property name="styleSheet">
+        <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
+       </property>
+       <property name="text">
+        <string> Общее время решения Tз=</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="TzLine">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>51</width>
+         <height>21</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>51</width>
+         <height>21</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLineEdit" name="errorMat">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>430</y>
+      <width>331</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>331</width>
+      <height>21</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>331</width>
+      <height>21</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(220, 220, 220);</string>
+    </property>
    </widget>
   </widget>
  </widget>
