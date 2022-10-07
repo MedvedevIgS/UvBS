@@ -330,6 +330,7 @@ class MainWindow(QMainWindow):
         self.errorN.setVisible(False)
         self.errorM.setVisible(False)
         self.errorTz.setVisible(False)
+        self.errorMat.setVisible(False)
 
     def LoadBrow(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', 'Data\ ', '(*.txt)')
@@ -442,157 +443,213 @@ class MainWindow(QMainWindow):
                 self.errorN.setVisible(False)
                 self.errorN.setText('')
     def clickRes(self):
+        errorCT=0
         if self.TzLine.text()!='' and self.nLine.text()!='' and self.mLine.text()!='':
-            self.Tz=float(self.TzLine.text())
-            self.errorTz.setVisible(False)
-            flagTz=True
-            while flagTz:
-                self.matrC = []
-                self.matrT = []
-                for i in range(self.n):
-                    self.matrC.append([])
-                    self.matrT.append([])
-                    for j in range(self.m):
-                        self.matrC[i].append(self.CMatr.cellWidget(i, j).text())
-                        self.matrT[i].append(self.TMatr.cellWidget(i, j).text())
-                for i in range(self.n):
-                    for j in range(self.m):
-                        for b1 in range(len(self.matrC[i][j])):
-                            if self.matrC[i][j][b1] == ',':
-                                bufC = self.matrC[i][j].split(',')
-                                self.matrC[i][j] = bufC[0] + '.' + bufC[1]
-                        for b2 in range(len(self.matrT[i][j])):
-                            if self.matrT[i][j][b2] == ',':
-                                bufT = self.matrT[i][j].split(',')
-                                self.matrT[i][j] = bufT[0] + '.' + bufT[1]
-                print('C:')
-                for i in self.matrC:
-                    print(i)
-                print('T:')
-                for i in self.matrT:
-                    print(i)
-                Data0 = CT0(self.matrC, self.matrT, self.n, self.m)
-                self.matrC0 = Data0[0]
-                self.matrT0 = Data0[1]
-                fw = open("Res\\res.txt", 'w')
-                print('C0:')
-                for i in self.matrC0:
+            flagGoodCT=True
+            for i in range(self.n):
+                print('строка')
+                for j in range(self.m):
+                    elC=self.CMatr.cellWidget(i, j).text()
+                    elT=self.TMatr.cellWidget(i, j).text()
+                    if elC!='' and elT!='':
+                        if elC[0]!=',' and elT[0]!=',':
+                            flagCorZnach=True
+                            print(elC + ' ' + elT)
+                            w = 0
+                            flagZap = True
+                            while flagZap and w < len(elC):
+                                if elC[w] == ',':
+                                    elC = elC.split(',')
+                                    elC = elC[0] + '.' + elC[1]
+                                    flagZap = False
+                                w = w + 1
+                            w = 0
+                            flagZap = True
+                            while flagZap and w < len(elT):
+                                if elT[w] == ',':
+                                    elT = elT.split(',')
+                                    elT = elT[0] + '.' + elT[1]
+                                    flagZap = False
+                                w = w + 1
+                            if flagCorZnach:
+                                print(elC + ' ' + elT)
+                                print(float(elC) < 0 or float(elT) < 0)
+                                if float(elC) < 0 or float(elT) < 0:
+                                    flagGoodCT = False
+                                    errorCT = 1
+                                if float(elC) == 0 or float(elT) == 0:
+                                    flagGoodCT = False
+                                    errorCT = 3
+                            else:
+                                flagGoodCT = False
+                                errorCT = 4
+                        else:
+                            flagGoodCT = False
+                            errorCT = 4
+                    else:
+                        flagGoodCT = False
+                        errorCT = 2
+            print(errorCT)
+            print(flagGoodCT)
+            if flagGoodCT:
+                self.errorMat.setVisible(False)
+                self.Tz = float(self.TzLine.text())
+                self.errorTz.setVisible(False)
+                flagTz = True
+                while flagTz:
+                    self.matrC = []
+                    self.matrT = []
+                    for i in range(self.n):
+                        self.matrC.append([])
+                        self.matrT.append([])
+                        for j in range(self.m):
+                            self.matrC[i].append(self.CMatr.cellWidget(i, j).text())
+                            self.matrT[i].append(self.TMatr.cellWidget(i, j).text())
+                    for i in range(self.n):
+                        for j in range(self.m):
+                            for b1 in range(len(self.matrC[i][j])):
+                                if self.matrC[i][j][b1] == ',':
+                                    bufC = self.matrC[i][j].split(',')
+                                    self.matrC[i][j] = bufC[0] + '.' + bufC[1]
+                            for b2 in range(len(self.matrT[i][j])):
+                                if self.matrT[i][j][b2] == ',':
+                                    bufT = self.matrT[i][j].split(',')
+                                    self.matrT[i][j] = bufT[0] + '.' + bufT[1]
+                    print('C:')
+                    for i in self.matrC:
+                        print(i)
+                    print('T:')
+                    for i in self.matrT:
+                        print(i)
+                    Data0 = CT0(self.matrC, self.matrT, self.n, self.m)
+                    self.matrC0 = Data0[0]
+                    self.matrT0 = Data0[1]
+                    fw = open("Res\\res.txt", 'w')
+                    print('C0:')
+                    for i in self.matrC0:
+                        print(i)
+
+                    for i in range(self.n):
+                        stroka = ''
+                        for j in range(self.m):
+                            stroka = stroka + self.matrC0[i][j] + ' '
+                        stroka = stroka[:-1] + '\n'
+                        fw.write(stroka)
+                    fw.write('\n')
+                    print('T0:')
+                    for i in self.matrT0:
+                        print(i)
+
+                    for i in range(self.n):
+                        stroka = ''
+                        for j in range(self.m):
+                            stroka = stroka + self.matrT0[i][j] + ' '
+                        stroka = stroka[:-1] + '\n'
+                        fw.write(stroka)
+                    fw.write('\n')
+
+                    Data1 = CT1(self.matrC0, self.matrT0, self.n, self.m, self.Tz)
+                    self.matrC1 = Data1[0]
+                    self.matrT1 = Data1[1]
+                    flagempty_row = True
+                    i = 0
+                    while flagempty_row and i < self.n:
+                        flagempty_row = False
+                        for j in range(self.m):
+                            if self.matrC1[i][j] != '#':
+                                flagempty_row = True
+                        i = i + 1
+                    if flagempty_row:
+                        flagTz = False
+                    else:
+                        print('Подбор')
+                        self.errorTz.setVisible(True)
+                        self.errorTz.setText('Подбор минимального Tз')
+                        print('Подбор')
+                        self.Tz = self.Tz + 0.5
+                        print('Подбор')
+                        print(flagTz)
+
+                self.TzLine.setText(str(self.Tz))
+                print('C1:')
+                for i in self.matrC1:
                     print(i)
 
                 for i in range(self.n):
                     stroka = ''
                     for j in range(self.m):
-                        stroka = stroka + self.matrC0[i][j] + ' '
+                        stroka = stroka + self.matrC1[i][j] + ' '
                     stroka = stroka[:-1] + '\n'
                     fw.write(stroka)
                 fw.write('\n')
-                print('T0:')
-                for i in self.matrT0:
+
+                print('T1:')
+                for i in self.matrT1:
                     print(i)
 
                 for i in range(self.n):
                     stroka = ''
                     for j in range(self.m):
-                        stroka = stroka + self.matrT0[i][j] + ' '
+                        stroka = stroka + self.matrT1[i][j] + ' '
                     stroka = stroka[:-1] + '\n'
                     fw.write(stroka)
                 fw.write('\n')
-
-                Data1 = CT1(self.matrC0, self.matrT0, self.n, self.m, self.Tz)
-                self.matrC1 = Data1[0]
-                self.matrT1 = Data1[1]
-                flagempty_row = True
-                i=0
-                while flagempty_row and i < self.n:
-                    flagempty_row = False
-                    for j in range(self.m):
-                        if self.matrC1[i][j] != '#':
-                            flagempty_row = True
-                    i = i + 1
-                if flagempty_row:
-                    flagTz=False
-                else:
-                    print('Подбор')
-                    self.errorTz.setVisible(True)
-                    self.errorTz.setText('Подбор минимальной Tз')
-                    print('Подбор')
-                    self.Tz=self.Tz+0.5
-                    print('Подбор')
-                    print(flagTz)
-
-            self.TzLine.setText(str(self.Tz))
-            print('C1:')
-            for i in self.matrC1:
-                print(i)
-
-            for i in range(self.n):
+                DataTree = Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
+                self.treeMass = DataTree[0]
                 stroka = ''
-                for j in range(self.m):
-                    stroka = stroka + self.matrC1[i][j] + ' '
-                stroka = stroka[:-1] + '\n'
-                fw.write(stroka)
-            fw.write('\n')
+                for i in range(len(DataTree[1])):
+                    stroka = stroka + str(DataTree[1][i]) + ' '
+                fw.write(stroka[:-1])
+                fw.close()
 
-            print('T1:')
-            for i in self.matrT1:
-                print(i)
+                G = nx.Graph()
+                edgesG = []
+                print(edgesG)
+                print(self.treeMass[0][0][2])
+                for i in range(len(self.treeMass)):
+                    for j in range(len(self.treeMass[i])):
+                        print(self.treeMass[i][j][0])
+                        print(self.treeMass[i][j][1])
+                        node = str(self.treeMass[i][j][0]) + ', ' + str(self.treeMass[i][j][1]) + ' |' + str(
+                            i) + ', ' + str(j)
+                        print(node)
+                        G.add_node(node)
+                print('ok')
+                for i in range(1, len(self.treeMass)):
+                    for j in range(len(self.treeMass[i - 1])):
+                        if self.treeMass[i - 1][j][2] == self.treeMass[i][0][2][:-1]:
+                            node1 = str(self.treeMass[i - 1][j][0]) + ', ' + str(
+                                self.treeMass[i - 1][j][1]) + ' |' + str(i - 1) + ', ' + str(j)
+                    print('ok1')
+                    for j in range(len(self.treeMass[i])):
+                        node2 = str(self.treeMass[i][j][0]) + ', ' + str(self.treeMass[i][j][1]) + ' |' + str(
+                            i) + ', ' + str(j)
+                        rebro = (node1, node2)
+                        edgesG.append(rebro)
+                print(edgesG)
+                G.add_edges_from(edgesG)
+                pos1 = hierarchy_pos(G, edgesG[0][0])
+                print('pos1')
+                nx.draw(G, pos=pos1, with_labels=True)
+                plt.show()
 
-            for i in range(self.n):
-                stroka = ''
-                for j in range(self.m):
-                    stroka = stroka + self.matrT1[i][j] + ' '
-                stroka = stroka[:-1] + '\n'
-                fw.write(stroka)
-            fw.write('\n')
-            DataTree=Tree(self.matrC1, self.matrT1, self.n, self.m, self.Tz)
-            self.treeMass = DataTree[0]
-            stroka=''
-            for i in range(len(DataTree[1])):
-                stroka=stroka+str(DataTree[1][i])+' '
-            fw.write(stroka[:-1])
-            fw.close()
-
-            G = nx.Graph()
-            edgesG=[]
-            print(edgesG)
-            print(self.treeMass[0][0][2])
-            for i in range(len(self.treeMass)):
-                for j in range(len(self.treeMass[i])):
-                    print(self.treeMass[i][j][0])
-                    print(self.treeMass[i][j][1])
-                    node = str(self.treeMass[i][j][0]) + ', ' + str(self.treeMass[i][j][1]) + ' |' + str(i)+', '+str(j)
-                    print(node)
-                    G.add_node(node)
-            print('ok')
-            for i in range(1,len(self.treeMass)):
-                for j in range(len(self.treeMass[i-1])):
-                    if self.treeMass[i-1][j][2]==self.treeMass[i][0][2][:-1]:
-                        node1=str(self.treeMass[i-1][j][0])+', '+str(self.treeMass[i-1][j][1])+' |'+str(i-1)+', '+str(j)
-                print('ok1')
-                for j in range(len(self.treeMass[i])):
-                    node2=str(self.treeMass[i][j][0])+', '+str(self.treeMass[i][j][1])+' |'+str(i)+', '+str(j)
-                    rebro = (node1, node2)
-                    edgesG.append(rebro)
-            print(edgesG)
-            G.add_edges_from(edgesG)
-            pos1 = hierarchy_pos(G, edgesG[0][0])
-            print('pos1')
-            nx.draw(G, pos=pos1, with_labels=True)
-            plt.show()
-
-
-
-
-
-
-
-            global widget2
-            Res = ResWindow()
-            widget2 = QtWidgets.QStackedWidget()
-            widget2.addWidget(Res)
-            widget2.setMinimumWidth(810)
-            widget2.setMinimumHeight(683)
-            widget2.show()
+                global widget2
+                Res = ResWindow()
+                widget2 = QtWidgets.QStackedWidget()
+                widget2.addWidget(Res)
+                widget2.setMinimumWidth(810)
+                widget2.setMinimumHeight(683)
+                widget2.show()
+            else:
+                self.errorMat.setVisible(True)
+                if errorCT==1:
+                    self.errorMat.setText('Ошибка: Введено отрицательное значение')
+                elif errorCT==2:
+                    self.errorMat.setText('Ошибка: Заполните пустые ячейки')
+                elif errorCT==3:
+                    self.errorMat.setText('Ошибка: Введено нулевое значение')
+                elif errorCT==4:
+                    self.errorMat.setText('Ошибка: Некорректное значение в ячейке')
 
         else:
             self.errorTz.setVisible(True)
@@ -613,8 +670,8 @@ def application():
     window=MainWindow()
     widget=QtWidgets.QStackedWidget()
     widget.addWidget(window)
-    widget.setMinimumWidth(780)
-    widget.setMinimumHeight(420)
+    widget.setMinimumWidth(980)
+    widget.setMinimumHeight(495)
     widget.show()
     app.exec()
 
